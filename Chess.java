@@ -85,14 +85,16 @@ public class Chess{
 	private static boolean validate(String s, boolean player){
 		s = s.toLowerCase();
 		int[] pos = {s.charAt(1),columnToNumber(s.charAt(2))};
-
+		if(pos[1] == -1){//error checking
+			return false;
+		}
 		char piece = s.charAt(0);
 		if(piece = 'p'){
 			int target = player ? 1:10;
 
-			if(board[pos[0]][pos[1]] != 0){
-				if(target == 10){
-					if(pos[0] + 1 < 8 && pos[1] + 1 < 8){
+			if(board[pos[0]][pos[1]] != 0){//prevents pawn from overwriting piece
+				if(target == 10){//black pawn
+					if(pos[0] + 1 < 8 && pos[1] + 1 < 8){//diagonal captures
 						if(board[pos[0]+1][pos[1]+1] == 10){
 							board[pos[0]+1][pos[1]+1] = 0;
 							board[pos[0]][pos[1]] = 10;
@@ -103,12 +105,12 @@ public class Chess{
 							board[pos[0]+1][pos[1]-1] = 0;
 							board[pos[0]][pos[1]] = 10;
 							return true;
-						}
+						}//make new else if statements for en passant
 					}else{
 						return false;
 					}
 				}
-				if(target == 1){
+				if(target == 1){//white pawn
 					if(pos[0] - 1 < 8 && pos[1] - 1 < 8){
 						if(board[pos[0]-1][pos[1]-1] == 1){
 							board[pos[0]-1][pos[1]-1] = 0;
@@ -126,10 +128,6 @@ public class Chess{
 					}
 				}//checks for diagonal captures
 			}
-			boolean c1 = true, c2 = true;
-			for(int i = 0; i < 8; i++){
-
-			}
 		}
 	}
 	private static int[] search(int[] pos, int id){
@@ -137,10 +135,11 @@ public class Chess{
 		boolean r1 = true, r2 = true; //rows
 		boolean rd1 = true, rd2 = true, ld1 = true ld2 = true; //diagonals
 		boolean k = true //knight movements
-		int d = 0; //distance
+		int d = 8; //distance
 		switch(id){
 		case 1://pawn
 			c1 = c2 = rd1 = rd2 = ld1 = ld2 = k = false;
+			d = (pos[1]==3 || pos[1]==4) ? 2:1; 
 		break;
 		case 2://king (needs revision)
 			break;
@@ -156,8 +155,8 @@ public class Chess{
 		case 6://rook
 			rd1 = rd2 = ld1 = ld2 = k = false;
 		}
-
-		for(int i = 0; i < 8 && (c1&&c2&&r1&&r2&&rd1&&rd2&&ld1&&ld2&&k); i++){
+		//idea: search for knights outside of for loop
+		for(int i = 0; i < d && (c1&&c2&&r1&&r2&&rd1&&rd2&&ld1&&ld2&&k); i++){
 
 		}
 	}
@@ -165,7 +164,7 @@ public class Chess{
 		if(c >= 'a' && c <= 'h'){
 			return c -'a';
 		}else{
-			System.out.println("columnToNumber Error");
+			return -1; //error
 		}
 	}
 }
