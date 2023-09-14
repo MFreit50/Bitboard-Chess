@@ -1,7 +1,7 @@
 import java.util.Scanner;
 public class Chess{
 	public static final int[][] board = new int[8][8];
-	public static boolea player = true;
+	public static boolean player = true;
 	public static void main(String[] args){
 		initiate(); //puts pieces on board;
 		printBoard();
@@ -88,22 +88,24 @@ public class Chess{
 		if(pos[1] == -1){//error checking
 			return false;
 		}
+		int x = pos[1], y = pos[2];
 		char piece = s.charAt(0);
 		if(piece = 'p'){
 			int target = player ? 1:10;
 
-			if(board[pos[0]][pos[1]] != 0){//prevents pawn from overwriting piece
+			if(board[y][x] != 0){//prevents pawn from overwriting piece
 				if(target == 10){//black pawn
-					if(pos[0] + 1 < 8 && pos[1] + 1 < 8){//diagonal captures
-						if(board[pos[0]+1][pos[1]+1] != 0 && board[pos[0]+1][pos[1]+1] < 10 && searchCheck(pos,false)){ //searchCheck() will need pos given by search() (fix later)
-							board[pos[0]+1][pos[1]+1] = 0;
-							board[pos[0]][pos[1]] = 10;
+					if(y - 1 >= 0 && x - 1 >= 0){//diagonal captures
+						if(board[y-1][x-1] == 10 && board[y][x] < 10){ //searchCheck() will need pos given by search() (fix later)
+							if(searchCheck(int[] arr = {y-1,x-1}, false)){return false;}//think this through
+							board[y-1][x-1] = 0;
+							board[y][x] = 10;
 							return true;
 						}
-					}else if(pos[0] + 1 < 8 && pos[1] - 1 < 8){
-						if(board[pos[0]+1][pos[1]-1] != 0){
-							board[pos[0]+1][pos[1]-1] = 0;
-							board[pos[0]][pos[1]] = 10;
+					}else if(y - 1 >= 0 && x + 1 < 8){
+						if(board[y+1][x-1] != 0 && board[y][x] < 10){
+							board[y-1][x+1] = 0;
+							board[y][x] = 10;
 							return true;
 						}//make new else if statements for en passant
 					}else{
@@ -111,16 +113,16 @@ public class Chess{
 					}
 				}
 				if(target == 1){//white pawn
-					if(pos[0] - 1 < 8 && pos[1] - 1 < 8){
-						if(board[pos[0]-1][pos[1]-1] == 1){
-							board[pos[0]-1][pos[1]-1] = 0;
-							board[pos[0]][pos[1]] = 1;
+					if(y + 1 < 8 && x - 1 >= 0){
+						if(board[y+1][x-1] == 1 && board[y][x] > 9){
+							board[y+1][x-1] = 0;
+							board[y][x] = 1;
 							return true;
 						}
-					}else if(pos[0] - 1 < 8 && pos[1] + 1 < 8){
-						if(board[pos[0]-1][pos[1]+1] == 1){
-							board[pos[0]-1][pos[1]+1] = 0;
-							board[pos[0]][pos[1]] = 1;
+					}else if(y + 1 < 8 && x + 1 < 8){
+						if(board[y+1][x+1] == 1 && board[y][x] > 9){
+							board[y+1][x+1] = 0;
+							board[y][x] = 1;
 							return true;
 						}
 					}else{
@@ -165,19 +167,19 @@ public class Chess{
 				}else if(board[y][x-i] != id){
 					c1 = false;
 				}else{
-					//found
+					return board[y][x-i];
 				}
 			}else{
 				c1 = false;
 			}
 
-			if(c2 && x + i <= 8){
+			if(c2 && x + i < 8){
 				if(board[y][x+i] == 0){
 					break;
 				}else if(board[y][x+i] != id){
 					c2 = false;
 				}else{
-					//found
+					return board[y][x+i];
 				}
 			}else{
 				c2 = false;
@@ -189,43 +191,43 @@ public class Chess{
 				}else if(board[y-i][x] != id){
 					r1 = false;
 				}else{
-					//found
+					return board[y-i][x];
 				}
 			}else{
 				r1 = false;
 			}
 
-			if(r2 && y + i <= 8){
-				if(board[y+1][x] == 0){
+			if(r2 && y + i < 8){
+				if(board[y+i][x] == 0){
 					break;
-				}else if(board[y+1][x] != id){
+				}else if(board[y+i][x] != id){
 					c2 = false;
 				}else{
-					//found
+					return board[y+i][x];
 				}
 			}else{
 				c2 = false;
 			}
 
-			if(rd1 && x + i <= 8 && y - i >= 0){
+			if(rd1 && x + i < 8 && y - i >= 0){
 				if(board[y-i][x+i] == 0){
 					break;
 				}else if(board[y-i][x+i] != id){
 					rd1 = false;
 				}else{
-					//found
+					return board[y-i][x+i];
 				}
 			}else{
 				rd1 = false;
 			}
 
-			if(rd2 && x - i >= 0 && y + 1 <= 8){
+			if(rd2 && x - i >= 0 && y + 1 < 8){
 				if(board[y+i][x-i] == 0){
 					break;
 				}else if(board[y+i][x-i] != id){
 					rd2 = false;
 				}else{
-					//found
+					return board[y+i][x-i];
 				}
 			}else{
 				rd2 = false;
@@ -237,7 +239,7 @@ public class Chess{
 				}else if(board[y-i][x-i] != id){
 					ld1 = false;
 				}else{
-					//found
+					return board[y-i][x-i];
 				}
 			}else{
 				ld1 = false;
@@ -249,7 +251,7 @@ public class Chess{
 				}else if(board[y+i][x+i] != id){
 					ld2 = false;
 				}else{
-					//found
+					return board[y+i][x+i];
 				}
 			}else{
 				ld2 = false;
@@ -370,7 +372,7 @@ public class Chess{
 		if(c >= 'a' && c <= 'h'){
 			return c -'a';
 		}else{
-			return -1; //error
+			return {-1,-1}; //error
 		}
 	}
 }
