@@ -34,41 +34,40 @@ public class Chess{
 		}
 		//black rooks
 		board[0][0] = 60;
-		board[7][0] = 60;
+		board[0][7] = 60;
 		//white rooks
-		board[0][7] = 6;
+		board[7][0] = 6;
 		board[7][7] = 6;
 		//black knights
-		board[1][0] = 50;
-		board[6][0] = 50;
+		board[0][1] = 50;
+		board[0][6] = 50;
 		//white knights
-		board[1][7] = 5;
-		board[6][7] = 5;
+		board[7][1] = 5;
+		board[7][6] = 5;
 		//black bishops
-		board[2][0] = 40;
-		board[5][0] = 40;
+		board[0][2] = 40;
+		board[0][5] = 40;
 		//white bishops
-		board[2][7] = 4;
-		board[5][7] = 4;
+		board[7][2] = 4;
+		board[7][5] = 4;
 		//black king and queen
-		board[3][0] = 30; //queen
-		board[4][0] = 20; //king
+		board[0][3] = 30; //queen
+		board[0][4] = 20; //king
 		//white king and queen
-		board[3][7] = 3;
-		board[4][7] = 2;
+		board[7][3] = 3;
+		board[7][4] = 2;
 	}
 	public static void printBoard(){
 		for(int i = 0; i < board.length; i++){
 			System.out.print((i + 1) + " ");
 			for(int j = 0; j < board[0].length; j++){
-				if(board[j][i] < 10){
-					System.out.print("| " + board[j][i] + " ");
+				if(board[i][j] < 10){
+					System.out.print("| " + board[i][j] + " ");
 				}else{
-					System.out.print("|" + board[j][i]);
+					System.out.print("|" + board[i][j]);
 				}
-				if(j == 7)
-					System.out.println("|");
 			}
+			System.out.println("|");
 		}
 	}
 	public static void move(){
@@ -144,7 +143,7 @@ public class Chess{
 		case 1://pawn
 			c1 = c2 = rd1 = rd2 = ld1 = ld2 = k = false;
 			d = (pos[1]==3 || pos[1]==4) ? 2:1; 
-		break;
+			break;
 		case 2://king (needs revision)
 			break;
 		case 3://queen
@@ -158,212 +157,121 @@ public class Chess{
 			break;
 		case 6://rook
 			rd1 = rd2 = ld1 = ld2 = k = false;
+			break;
 		}
 		//idea: search for knights outside of for loop
 		for(int i = 0; i < d && (c1&&c2&&r1&&r2&&rd1&&rd2&&ld1&&ld2&&k); i++){
-			if(c1 && x - i >= 0){
-				if(board[y][x-i] == 0){
-					break;
-				}else if(board[y][x-i] != id){
-					c1 = false;
-				}else{
-					return board[y][x-i];
-				}
-			}else{
+			if(c1 && t=search(x-i,y,target)){
+				if(t == 1){return board[y][x-i];}
 				c1 = false;
 			}
-
-			if(c2 && x + i < 8){
-				if(board[y][x+i] == 0){
-					break;
-				}else if(board[y][x+i] != id){
-					c2 = false;
-				}else{
-					return board[y][x+i];
-				}
-			}else{
+			if(c2 && t=search(x+i,y,target)){
+				if(t == 1){return board[y][x+i];}
 				c2 = false;
 			}
-
-			if(r1 && y - i >= 0){
-				if(board[y-i][x] == 0){
-					break;
-				}else if(board[y-i][x] != id){
-					r1 = false;
-				}else{
-					return board[y-i][x];
-				}
-			}else{
+			if(r1 && t=search(x,y-i,target)){
+				if(t == 1){return board[y-i][x];}
 				r1 = false;
 			}
-
-			if(r2 && y + i < 8){
-				if(board[y+i][x] == 0){
-					break;
-				}else if(board[y+i][x] != id){
-					c2 = false;
-				}else{
-					return board[y+i][x];
-				}
-			}else{
-				c2 = false;
+			if(r2 && t=search(x,y+i,target)){
+				if(t == 1){return board[y+i][x];}
+				r2 = false;
 			}
-
-			if(rd1 && x + i < 8 && y - i >= 0){
-				if(board[y-i][x+i] == 0){
-					break;
-				}else if(board[y-i][x+i] != id){
-					rd1 = false;
-				}else{
-					return board[y-i][x+i];
-				}
-			}else{
+			if(rd1 && t=search(x+i,y-i,target)){
+				if(t == 1){return board[y-i][x+i];}
 				rd1 = false;
 			}
-
-			if(rd2 && x - i >= 0 && y + 1 < 8){
-				if(board[y+i][x-i] == 0){
-					break;
-				}else if(board[y+i][x-i] != id){
-					rd2 = false;
-				}else{
-					return board[y+i][x-i];
-				}
-			}else{
+			if(rd2 && t=search(x-i,y+i,target)){
+				if(t == 1){return board[y+i][x-i];}
 				rd2 = false;
 			}
-
-			if(ld1 && x - i >= 0 && y - i >= 0){
-				if(board[x-i][y-i] == 0){
-					break;
-				}else if(board[y-i][x-i] != id){
-					ld1 = false;
-				}else{
-					return board[y-i][x-i];
-				}
-			}else{
+			if(ld1 && t=search(x-i,y-i,target)){
+				if(t == 1){return board[y-i][x-i];}
 				ld1 = false;
 			}
-
-			if(ld2 && x + i <= 8 && y + i <= 8){
-				if(board[y+i][x+i] == 0){
-					break;
-				}else if(board[y+i][x+i] != id){
-					ld2 = false;
-				}else{
-					return board[y+i][x+i];
-				}
-			}else{
+			if(ld2 && t=search(x+i,y+i,target)){
+				if(t == 1){return board[y+i][x+i];}
 				ld2 = false;
 			}
-
 		}
 	}
-	private static boolean searchCheck(int[] pos, boolean color){
-		target = color ? 2:20;
+	private static int search(int x, int y, int target){
+		if(x >= 0 && x < 8 && y >= 0 && y < 8){
+			if(board[y][x] == 0){
+				return 0;
+			}else if(board[y][x] != target){
+				return -1;
+			}else{
+				return 1;
+			}
+		}
+		return -1;
+	}
+	private static boolean searchKnight(){
+
+	}
+	private static boolean searchCheck(int[] pos, int id){
+		target = player ? 2:20;
 		boolean c1 = true, c2 = true; //collumns
 		boolean r1 = true, r2 = true; //rows
 		boolean rd1 = true, rd2 = true, ld1 = true ld2 = true; //diagonals
 		int x = pos[1];
 		int y = pos[0];
 
+		//capture ids 
+		switch(id){
+		case:0//knight
+			break;
+		case:1//forward
+			r1=r2=false;
+			break;
+		case:2//sideways
+			c1=c2=false;
+			break;
+		case:3//right diagonal
+			rd1=rd2=false;
+			break;
+		case:4//left diagonal
+			ld1=ld2=false;
+			break;
+
+
+		}
+		//temporary variable
+		int t = 0;
 		for(int i = 0; i < 8 && (c1&&c2&&r1&&r2&&rd1&&rd2&&ld1&&ld2); i++){
-			if(c1 && x - i >= 0){
-				if(board[y][x-i] == 0){
-					break;
-				}else if(board[y][x-i] != target){
-					c1 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(c1 && t=search(x-i,y,target)){
+				if(t == 1){return true;}
 				c1 = false;
 			}
-
-			if(c2 && x + i <= 8){
-				if(board[y][x+i] == 0){
-					break;
-				}else if(board[y][x+i] != target){
-					c2 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(c2 && t=search(x+i,y,target)){
+				if(t == 1){return true;}
 				c2 = false;
 			}
-
-			if(r1 && y - i >= 0){
-				if(board[y-i][x] == 0){
-					break;
-				}else if(board[y-i][x] != target){
-					r1 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(r1 && t=search(x,y-i,target)){
+				if(t == 1){return true;}
 				r1 = false;
 			}
-
-			if(r2 && y + i <= 8){
-				if(board[y+1][x] == 0){
-					break;
-				}else if(board[y+1][x] != target){
-					c2 = false;
-				}else{
-					return true;
-				}
-			}else{
-				c2 = false;
+			if(r2 && t=search(x,y+i,target)){
+				if(t == 1){return true;}
+				r2 = false;
 			}
-
-			if(rd1 && x + i <= 8 && y - i >= 0){
-				if(board[y-i][x+i] == 0){
-					break;
-				}else if(board[y-i][x+i] != target){
-					rd1 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(rd1 && t=search(x+i,y-i,target)){
+				if(t == 1){return true;}
 				rd1 = false;
 			}
-
-			if(rd2 && x - i >= 0 && y + 1 <= 8){
-				if(board[y+i][x-i] == 0){
-					break;
-				}else if(board[y+i][x-i] != target){
-					rd2 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(rd2 && t=search(x-i,y+i,target)){
+				if(t == 1){return true;}
 				rd2 = false;
 			}
-
-			if(ld1 && x - i >= 0 && y - i >= 0){
-				if(board[x-i][y-i] == 0){
-					break;
-				}else if(board[y-i][x-i] != target){
-					ld1 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(ld1 && t=search(x-i,y-i,target)){
+				if(t == 1){return true;}
 				ld1 = false;
 			}
-
-			if(ld2 && x + i <= 8 && y + i <= 8){
-				if(board[y+i][x+i] == 0){
-					break;
-				}else if(board[y+i][x+i] != target){
-					ld2 = false;
-				}else{
-					return true;
-				}
-			}else{
+			if(ld2 && t=search(x+i,y+i,target)){
+				if(t == 1){return true;}
 				ld2 = false;
 			}
-
 		}
 		return false;
 
