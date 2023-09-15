@@ -159,6 +159,7 @@ public class Chess{
 			rd1 = rd2 = ld1 = ld2 = k = false;
 			break;
 		}
+		int t = 0;
 		//idea: search for knights outside of for loop
 		for(int i = 0; i < d && (c1&&c2&&r1&&r2&&rd1&&rd2&&ld1&&ld2&&k); i++){
 			if(c1 && t=search(x-i,y,target)){
@@ -207,8 +208,48 @@ public class Chess{
 		}
 		return -1;
 	}
-	private static boolean searchKnight(){
+	private static boolean searchKnight(int x, int y){
+		target = player ? 5:50;
+		boolean up1 = true, up2 = true;
+		boolean l1 = true, l2 = true;
+		boolean r1 = true, r2 = true;
+		boolean d1 = true, d2 = true;
 
+		switch(x){
+		case:7
+			up2 = r1 = r2 = d2 = false;
+			break;
+		case:6
+			r1 = r2 = false;
+			break;
+		case:0
+			up1 = l1 = l2 = d1 = false;
+			break;
+		case:1
+			l1 = l2 = false;
+			break;}
+		switch(y){
+		case:7
+			up1 = up2 = l2 = r2 = false;
+			break;
+		case:6
+			up1 = up2 = false;
+			break;
+		case:0
+			d1 = d2 = l1 = r1 = false;
+			break;
+		case:1
+			d1 = d2 = false;
+			break;}
+		if(up1 && board[y-2][x-1] == target){return true;}
+		if(up2 && board[y-2][x+1] == target){return true;}
+		if(l1 && board[y-1][x-2] == target){return true;}
+		if(l2 && board[y+1][x-2] == target){return true;}
+		if(r1 && board[y-1][x+2] == target){return true;}
+		if(r2 && board[y+1][x+2] == target){return true;}
+		if(d1 && board[y+2][x-1] == target){return true;}
+		if(d2 && board[y+2][x+1] == target){return true;}
+		return false;
 	}
 	private static boolean searchCheck(int[] pos, int id){
 		target = player ? 2:20;
@@ -234,8 +275,6 @@ public class Chess{
 		case:4//left diagonal
 			ld1=ld2=false;
 			break;
-
-
 		}
 		//temporary variable
 		int t = 0;
@@ -274,6 +313,9 @@ public class Chess{
 			}
 		}
 		return false;
+
+	}
+	private static boolean searchThreat(){
 
 	}
 	private static int columnToNumber(char c){
