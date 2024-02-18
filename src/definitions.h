@@ -4,6 +4,8 @@
 #define getBit(board, square) (board & (1ULL << square))
 #define setBit(board, square) (board |= (1ULL << square))
 #define popBit(board, square) (getBit(board, square) ? board ^= (1ULL << square) : 0)
+#define countBits(board) __builtin_popcountll(board)
+#define lsbIndex(board) (board ? __builtin_ctzll(board) : -1)
 
 //constants
 /*
