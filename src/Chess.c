@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "definitions.h"
 #include "Debug.c"
+#include "Attacks.c"
 
 //enums board squares
 enum{
@@ -27,7 +28,6 @@ int main(){
     U64 board = 0ULL;
     setBit(board, a2);
     printBoard(board);
-    popBit(board, a2);
-    printBoard(board);
+    initializeLeaperAttacks();
     return 1;
 }
