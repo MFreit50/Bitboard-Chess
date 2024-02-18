@@ -9,10 +9,10 @@ const U64 NOT_AB_FILE= 0xFCFCFCFCFCFCFCFCULL;
 enum{
     white, black
 };
-//pawn attacks table
+//attacks table [side][square]
 U64 pawnAttacks[2][64];
-//knight attacks table
 U64 knightAttacks[64];
+U64 kingAttacks[64];
 
 U64 maskPawnAttacks(int side, int square){
     //piece bitboard
@@ -60,14 +60,42 @@ U64 maskKnightAttacks(int square){
     return attacks;
 }
 
+U64 maskKingAttacks(int square){
+    //piece bitboard
+    U64 board = 0ULL;
+
+    //attack bitboard result
+    U64 attacks = 0ULL;
+
+    //set piece
+    setBit(board, square);
+
+    if(board >> 8) attacks |= (board >> 8);
+    if(board << 8) attacks |= (board << 8);
+    if((board << 1) & NOT_A_FILE){
+     attacks |= (board << 9);
+     attacks |= (board >> 7);
+     attacks |= (board << 1);
+    }
+    if((board >> 1) & NOT_H_FILE){
+        attacks |= (board >> 9);
+        attacks |= (board << 7);
+        attacks |= (board >> 1);
+    }
+    //return attack map
+    return attacks;
+}
+
 //initialize leaper pieces attacks
 void initializeLeaperAttacks(){
     //loop over 64 board squares
     for(int square = 0; square < 64; square++){
-        //initialize pawn attacks 
+        //pawns 
         pawnAttacks[white][square] = maskPawnAttacks(white, square);
         pawnAttacks[black][square] = maskPawnAttacks(black, square);
-        //initialize knight attacks
+        //knight
         knightAttacks[square] = maskKnightAttacks(square);
+        //king
+        kingAttacks[square] = maskKingAttacks(square);
     }
 }
