@@ -70,6 +70,12 @@ enum{white, black};
 U64 pawnAttacks[2][64];
 U64 knightAttacks[64];
 U64 kingAttacks[64];
+//attacks table [square][occupancies]
+U64 bishopAttacks[64][512];
+U64 rookAttacks[64][4096];
+//attack masks
+U64 bishopMasks[64];
+U64 rookMasks[64];
 
 U64 maskPawnAttacks(int side, int square){
     //piece bitboard
@@ -239,7 +245,6 @@ void initializeLeaperAttacks(){
         kingAttacks[square] = maskKingAttacks(square);
     }
 }
-
 U64 setOccupancy(int index, int bitsInMask, U64 attackMask){
     //Occupancy Map
     U64 occupancy = 0ULL;
@@ -251,4 +256,55 @@ U64 setOccupancy(int index, int bitsInMask, U64 attackMask){
         if(index&(1<<count)) occupancy |= (1ULL << square);
     }
     return occupancy;
+}
+void initializeSliderAttacks(int bishop){
+    for(int square = 0; square < 64; square++){
+        //initialize rook and bishops mask
+        bishopMasks[square] = maskBishopAttacks(square);
+        rookMasks[square] = maskRookAttacks(square);
+        //initialize current masks
+        U64 attackMask = bishop ? bishopMasks[square] : rookMasks[square];
+        //initialize relevant occupancy bit count
+        int relevantBitsCount = countBits(attackMask);
+        //initialize occupancy indicies
+        int occupancyIndicies = (1 << relevantBitsCount);
+
+        //loop over occupancy indicies
+        for(int index = 0; index < occupancyIndicies; index++){
+            //bishop
+            if(bishop){
+                //initialize current occupancy variations
+                U64 occupancy = setOccupancy(index, relevantBitsCount, attackMask);
+                //initialize magic index
+                int magicIndex = (occupancy * bishopMagicNumbers[square]) >> (64 - bishopRelevantBits[square]);
+                //initialze bishop attacks
+                bishopAttacks[square][magicIndex] = bishopMoves(square, occupancy);
+            }
+            //rook
+            else{
+                //initialize current occupancy variations
+                U64 occupancy = setOccupancy(index, relevantBitsCount, attackMask);
+                //initialize magic index
+                int magicIndex = (occupancy * rookMagicNumbers[square]) >> (64 - rookRelevantBits[square]);
+                //initialze bishop attacks
+                rookAttacks[square][magicIndex] = rookMoves(square, occupancy);
+            }
+        }
+    }
+}
+//get bishop attacks
+static inline U64 getBishopAttacks(int square, U64 occupancy){
+    //get bishop attacks assuming current board occupancy
+    occupancy &= bishopMasks[square];
+    occupancy *= bishopMagicNumbers[square];
+    occupancy >>= 64 - bishopRelevantBits[square];
+    return bishopAttacks[square][occupancy];
+}
+//get rook attacks
+static inline U64 getRookAttacks(int square, U64 occupancy){
+    //get rook attacks assuming current board occupancy
+    occupancy &= rookMasks[square];
+    occupancy *= rookMagicNumbers[square];
+    occupancy >>= 64 - rookRelevantBits[square];
+    return rookAttacks[square][occupancy];
 }
