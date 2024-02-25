@@ -196,7 +196,7 @@ U64 maskRookAttacks(int square){
     //initialize target ranks and files
     int targetRank = square / 8;
     int targetFile = square % 8;
-    //mask relevant bishop occupancy bits
+    //mask relevant rook occupancy bits
     for (rank = targetRank + 1; rank <= 6; rank++) attacks |= (1ULL << (rank * 8 + targetFile));
     for (rank = targetRank - 1; rank >= 1; rank--) attacks |= (1ULL << (rank * 8 + targetFile));
     for (file = targetFile + 1; file <= 6; file++) attacks |= (1ULL << (targetRank * 8 + file));
@@ -212,7 +212,7 @@ U64 rookMoves(int square, U64 block){
     //initialize target ranks and files
     int targetRank = square / 8;
     int targetFile = square % 8;
-    //mask relevant bishop occupancy bits
+    //mask relevant rook occupancy bits
     for (rank = targetRank + 1; rank <= 7; rank++){
         attacks |= (1ULL << (rank * 8 + targetFile));
         if((1ULL << (rank * 8 + targetFile) & block)) break;
