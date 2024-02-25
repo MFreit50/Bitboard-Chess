@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include "definitions.h"
+#include "bitboard.h"
 
 const U64 NOT_A_FILE = 0xFEFEFEFEFEFEFEFEULL;
 const U64 NOT_H_FILE = 0x7F7F7F7F7F7F7F7FULL;
 const U64 NOT_HG_FILE= 0x3F3F3F3F3F3F3F3FULL;
 const U64 NOT_AB_FILE= 0xFCFCFCFCFCFCFCFCULL;
-
 const int bishopRelevantBits[] = {
     6, 5, 5, 5, 5, 5, 5, 6,
     5, 5, 5, 5, 5, 5, 5, 5,
@@ -65,7 +64,7 @@ const U64 bishopMagicNumbers[64] = {
 0x4282480801080cULL,0x81c098488088240ULL,0x1400000090480820ULL,0x4444000030208810ULL,
 0x1020142010820200ULL,0x2234802004018200ULL,0xc2040450820a00ULL,0x2101021090020ULL
 };
-enum{white, black};
+
 //attacks table [side][square]
 U64 pawnAttacks[2][64];
 U64 knightAttacks[64];
@@ -307,4 +306,25 @@ static inline U64 getRookAttacks(int square, U64 occupancy){
     occupancy *= rookMagicNumbers[square];
     occupancy >>= 64 - rookRelevantBits[square];
     return rookAttacks[square][occupancy];
+}
+//get queen attacks
+static inline U64 getQueenAttacks(int square, U64 occupancy){
+    U64 queenAttacks = 0ULL;
+    U64 bishopOccupancies = occupancy;
+    U64 rookOccupancies = occupancy;
+
+    //get bishop attacks assuming current board occupancy
+    bishopOccupancies &= bishopMasks[square];
+    bishopOccupancies *= bishopMagicNumbers[square];
+    bishopOccupancies >>= 64 - bishopRelevantBits[square];
+
+    queenAttacks = bishopAttacks[square][bishopOccupancies];
+    
+
+    //get rook attacks assuming current board occupancy
+    rookOccupancies &= rookMasks[square];
+    rookOccupancies *= rookMagicNumbers[square];
+    rookOccupancies >>= 64 - rookRelevantBits[square];
+    queenAttacks |= rookAttacks[square][rookOccupancies];
+    return queenAttacks;
 }
