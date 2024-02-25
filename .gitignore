@@ -5,3 +5,5 @@ src/Chess.exe
 .vscode/tasks.json
 Factor.java
 .vscode/c_cpp_properties.json
+src/definitions.h
+src/PositionsFEN.h
