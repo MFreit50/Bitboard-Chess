@@ -4,3 +4,4 @@ src/Chess.exe
 .vscode/settings.json
 .vscode/tasks.json
 Factor.java
+.vscode/c_cpp_properties.json
