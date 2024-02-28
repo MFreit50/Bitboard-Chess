@@ -19,6 +19,25 @@ typedef const enum{
 }squares;
 //define bitboards for every piece
 U64 bitboards[12];
+//define occupancy bitboards
+U64 occupancies[3];
+//encode pieces
+enum{P, N, B, R, Q, K, p, n, b, r, q, k};
+//character to encoded constants
+int charPieces[] = {
+    ['P'] = P,
+    ['N'] = N,
+    ['B'] = B,
+    ['R'] = R,
+    ['Q'] = Q,
+    ['K'] = K,
+    ['p'] = p,
+    ['n'] = n,
+    ['b'] = b,
+    ['r'] = r,
+    ['q'] = q,
+    ['k'] = k
+};
 
 //enums board squares
 enum{rook, bishop};
