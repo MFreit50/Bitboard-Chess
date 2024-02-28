@@ -1,25 +1,7 @@
 #include <stdio.h>
 #include "Bitboard.h"
 #include <string.h>
-//encode pieces
-enum{P, N, B, R, Q, K, p, n, b, r, q, k};
-//define occupancy bitboards
-U64 occupancies[3];
-//character to encoded constants
-int charPieces[] = {
-    ['P'] = P,
-    ['N'] = N,
-    ['B'] = B,
-    ['R'] = R,
-    ['Q'] = Q,
-    ['K'] = K,
-    ['p'] = p,
-    ['n'] = n,
-    ['b'] = b,
-    ['r'] = r,
-    ['q'] = q,
-    ['k'] = k
-};
+
 //Unicode pieces
 char *unicodePieces[12] = {"♙", "♘", "♗", "♖", "♕", "♔", "♟︎", "♞", "♝", "♜", "♛", "♚"};
 //ASCII pieces
@@ -149,8 +131,6 @@ void parseFEN(char *fen){
     //initialize the occupancies of both
     occupancies[both] |= occupancies[white];
     occupancies[both] |= occupancies[black];
-    printf("no square%d", noSquare);
-    printf("enPassant = %d\n",enPassant);
 }
 
 void printBoard(){
@@ -177,7 +157,6 @@ void printBoard(){
     //print side to move
     printf("Side to move: %s\n", !side ? "white" : "black");
     //print en passant square
-    printf("enPassant = %d\n",enPassant);
     printf("En passant: %s\n", (enPassant != noSquare) ? squareToCoordinates[enPassant] : "none");
 
     //print castling rights
