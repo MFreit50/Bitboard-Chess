@@ -328,3 +328,42 @@ static inline U64 getQueenAttacks(int square, U64 occupancy){
     queenAttacks |= rookAttacks[square][rookOccupancies];
     return queenAttacks;
 }
+
+//check if square is attacked
+static inline int isSquareAttacked(int square, int side){
+    //attacked by white pawn
+    if((side == white) && (pawnAttacks[black][square] & bitboards[P]))          return 1;
+    //attacked by black pawn
+    if((side == black) && (pawnAttacks[white][square] & bitboards[p]))          return 1;
+
+    //attacked by knights   
+    if(knightAttacks[square] & ((side == white) ? bitboards[N] : bitboards[n])) return 1;
+
+    //attacked by Kings
+    if(kingAttacks[square] & ((side == white) ? bitboards[K] : bitboards[k]))   return 1;
+
+    //attacked by bishops
+    if(getBishopAttacks(square, occupancies[both]) & ((side == white) ? bitboards[B] : bitboards[b])) return 1;
+    //attacked by rooks
+    if(getRookAttacks(square, occupancies[both]) & ((side == white) ? bitboards[R] : bitboards[r]))   return 1;
+    //attacked by Queens
+    if(getQueenAttacks(square, occupancies[both]) & ((side == white) ? bitboards[Q] : bitboards[q]))   return 1;
+    
+    return 0;
+}
+
+void printAttackedSquares(int side){
+    //ranks
+    for(int rank = 0; rank < 8; rank++){
+        for(int file = 0; file < 8; file++){
+            int square = rank*8 + file;
+            if(!file){//print board ranks
+                printf("%d  ", 8 - rank);
+            }
+            printf("%d ", isSquareAttacked(square, side) ? 1 : 0);
+        }
+        printf("\n");
+    }
+    //print board files
+    printf("\n    a b c d e f g h\n\n");
+}
